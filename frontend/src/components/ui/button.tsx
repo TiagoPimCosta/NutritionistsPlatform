@@ -9,7 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        default: "bg-primary/70 text-primary-foreground shadow-xs hover:bg-primary",
+        destructive:
+          "bg-destructive/70 text-white shadow-xs hover:bg-destructive focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         schedule: "bg-accent/35 text-accent hover:bg-accent/60",
         website: "bg-primary/35 text-primary hover:bg-primary/60",
         anwserRequest: "text-nutritionistsFilter hover:bg-primary/60",

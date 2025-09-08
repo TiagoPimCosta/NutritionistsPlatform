@@ -43,7 +43,7 @@ export default function PendingAppointments() {
     <div className="container mx-auto px-4 py-8 space-y-6">
       <div className="flex flex-col">
         <h1 className="text-3xl text-muted-foreground">Pending Requests</h1>
-        <span className="text-lg text-muted-foreground">Accept or Reject pending requests</span>
+        <span className="text-lg text-muted-foreground">Accept or reject pending requests</span>
       </div>
       <Carousel className="w-full">
         <CarouselContent className="w-full">

@@ -44,7 +44,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2 ">
+                <div className="flex flex-col gap-2">
                   <span className="flex flex-row gap-2 text-sm text-muted-foreground items-center">
                     <Calendar className="h-4 w-4 text-primary" />
                     {appointmentDate}

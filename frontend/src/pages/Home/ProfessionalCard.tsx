@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Banknote, BriefcaseBusiness, ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@tanstack/react-router";
+import { ScheduleAppointmentModal } from "./ScheduleAppointmentModal";
 
 interface ProfessionalCardProps {
   id: string;
@@ -80,9 +81,11 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
 
           {/* Action buttons */}
           <div className="flex flex-col gap-2 ml-4">
-            <Button size="lg" variant="schedule" className="w-64">
-              Schedule appointment
-            </Button>
+            <ScheduleAppointmentModal nutritionistId={id}>
+              <Button size="lg" variant="schedule" className="w-64">
+                Schedule appointment
+              </Button>
+            </ScheduleAppointmentModal>
             <Button size="lg" variant="website" className="w-64" asChild>
               <Link to="/nutritionist/$nutritionistId" params={{ nutritionistId: String(id) }}>
                 Website
