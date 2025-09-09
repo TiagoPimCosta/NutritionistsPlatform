@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
-  resources :appointments
+  resources :appointment_statuses
+  resources :appointments, only: [ :index, :create ]  do
+    member do
+      post "accept"
+      post "reject"
+    end
+  end
   resources :nutritionists_services
   resources :nutritionists
   resources :services
