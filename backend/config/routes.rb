@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :appointment_statuses
-  resources :appointments, only: [ :index, :create ]  do
+  resources :appointments, only: [ :show, :index, :create ] do
     member do
       post "accept"
       post "reject"

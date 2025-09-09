@@ -52,8 +52,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_163500) do
     t.bigint "service_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["nutritionist_id"], name: "index_nutritionists_services_on_nutritionist_id"
-    t.index ["service_id"], name: "index_nutritionists_services_on_service_id"
+    t.index [ "nutritionist_id" ], name: "index_nutritionists_services_on_nutritionist_id"
+    t.index [ "service_id" ], name: "index_nutritionists_services_on_service_id"
   end
 
   create_table "services", force: :cascade do |t|

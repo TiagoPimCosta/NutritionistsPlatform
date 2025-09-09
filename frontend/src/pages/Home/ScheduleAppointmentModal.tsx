@@ -23,6 +23,7 @@ import {
   type CreateAppointmentFormSchema,
 } from "@/schemas/appointments";
 import { parseAppointmentDate } from "@/utils/date";
+import { useCreateAppointment } from "@/services/appointments/mutations";
 
 interface ScheduleAppointmentModalProps {
   children: React.ReactNode;
@@ -32,7 +33,10 @@ interface ScheduleAppointmentModalProps {
 export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
   const { children } = props;
 
-  const [open, setOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const createAppointment = useCreateAppointment();
 
   const { register, handleSubmit, control, formState, reset } =
     useForm<CreateAppointmentFormSchema>({
@@ -46,19 +50,21 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
     });
   const { errors } = formState;
 
-  const handleSubmitScheduleAppointment = handleSubmit((data) => {
-    console.log("data ", data);
-    console.log({
-      nutritionistId: props.nutritionistId,
+  const handleSubmitScheduleAppointment = handleSubmit(async (data) => {
+    const submittedData = {
+      nutritionist_id: props.nutritionistId,
       name: data.name,
       email: data.email,
       date: parseAppointmentDate(data.date, data.time),
-    });
+    };
+
+    await createAppointment.mutateAsync(submittedData);
+    setDialogOpen(false);
     reset();
   });
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="pb-4">
@@ -93,7 +99,7 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
                   control={control}
                   name="date"
                   render={({ field: { value, onChange } }) => (
-                    <Popover open={open} onOpenChange={setOpen}>
+                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           id="date-picker"
@@ -114,7 +120,7 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
                           captionLayout="dropdown"
                           onSelect={(d) => {
                             onChange(d);
-                            setOpen(false);
+                            setCalendarOpen(false);
                           }}
                         />
                       </PopoverContent>
