@@ -32,12 +32,11 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
+} & React.ComponentProps<typeof Button>;
 
 function PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps) {
   return (
-    <a
+    <Button
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}
@@ -45,12 +44,12 @@ function PaginationLink({ className, isActive, size = "icon", ...props }: Pagina
         buttonVariants({
           size,
         }),
-        "bg-card text-secondary-foreground",
+        "bg-card text-secondary-foreground rounded-none",
         "data-[active=true]:bg-primary/90",
         className
       )}
       {...props}
-    />
+    ></Button>
   );
 }
 

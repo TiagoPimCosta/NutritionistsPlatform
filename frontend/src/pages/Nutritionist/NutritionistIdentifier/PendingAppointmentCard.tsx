@@ -3,6 +3,7 @@ import { Calendar, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
+import { AnswerAppointmentRequestModal } from "./AnswerAppointmentRequestModal";
 
 interface PendingAppointmentCard {
   date: string;
@@ -13,7 +14,6 @@ interface PendingAppointmentCard {
 
 const PendingAppointmentCard = (props: PendingAppointmentCard) => {
   const { date, guest } = props;
-
   const nameInitials = guest.name
     .split(" ")
     .map((n) => n[0])
@@ -26,17 +26,13 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
     <Card className=" shadow-md hover:shadow-lg transition-shadow pb-0">
       <CardContent className="px-6">
         <div className="flex gap-8">
-          {/* Avatar */}
           <Avatar className="h-20 w-20">
             <AvatarImage src="/public/avatar-icon.png" alt={guest.name} />
             <AvatarFallback className="bg-primary/10 text-primary font-semibold">
               {nameInitials}
             </AvatarFallback>
           </Avatar>
-
-          {/* Main content */}
           <div className="flex-1">
-            {/* Details */}
             <div className="flex flex-col gap-4 w-full justify-between">
               <div className="flex flex-col">
                 <h3 className="text-2xl mb-1">{guest.name}</h3>
@@ -60,9 +56,11 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
         </div>
       </CardContent>
       <CardFooter className="border-t p-0 pt-0">
-        <Button variant="anwserRequest" className="w-full rounded-t-none rounded-b-xl font-bold">
-          Answer Request
-        </Button>
+        <AnswerAppointmentRequestModal date={date} guest={guest.name}>
+          <Button variant="anwserRequest" className="w-full rounded-t-none rounded-b-xl font-bold">
+            Answer Request
+          </Button>
+        </AnswerAppointmentRequestModal>
       </CardFooter>
     </Card>
   );

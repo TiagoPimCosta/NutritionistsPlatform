@@ -7,36 +7,42 @@ import { Link } from "@tanstack/react-router";
 import { ScheduleAppointmentModal } from "./ScheduleAppointmentModal";
 
 interface ProfessionalCardProps {
-  id: string;
+  id: number;
   name: string;
-  title: string;
-  credentials: string;
-  location: string;
+  street: string;
   city: string;
   price: number;
+  services: [
+    {
+      name: string;
+    },
+    {
+      name: string;
+    },
+  ];
 }
 
 const ProfessionalCard = (props: ProfessionalCardProps) => {
-  const { id, name, title, credentials, location, city, price } = props;
+  const { id, name, services, street, city, price } = props;
 
   const nameInitials = name
     .split(" ")
     .map((n) => n[0])
     .join("");
 
+  const formattedPrice = (price / 100).toFixed(2);
+
+  const servicesList = services.map((service) => `${service.name} • `);
   return (
     <Card className="p-6 shadow-md hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
         <div className="flex gap-8">
-          {/* Avatar */}
           <Avatar className="h-24 w-24">
             <AvatarImage src="/public/avatar-icon.png" alt={name} />
             <AvatarFallback className="bg-primary/10 text-primary font-semibold">
               {nameInitials}
             </AvatarFallback>
           </Avatar>
-
-          {/* Main content */}
           <div className="flex-1">
             <div className="flex flex-col items-start justify-between gap-6">
               <div>
@@ -46,23 +52,17 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
                 </Badge>
 
                 <h3 className="text-2xl font-semibold text-primary mb-1">{name}</h3>
-                <p className="text-muted-foreground">
-                  {title} • {credentials}
-                </p>
+                <p className="text-muted-foreground">{servicesList}1925N</p>
               </div>
-
-              {/* Details */}
               <div className="flex flex-row w-full justify-between">
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-6 w-6 text-primary" />
                     <span className="text-primary font-medium">Online Follow-up</span>
                   </div>
-
-                  <span className="pl-8 text-muted-foreground">{location}</span>
+                  <span className="pl-8 text-muted-foreground">{street}</span>
                   <span className="pl-8 text-muted-foreground">{city}</span>
                 </div>
-
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2 items-center">
                     <BriefcaseBusiness className="h-5 w-5 text-primary" />
@@ -72,14 +72,12 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Banknote className="h-5 w-5 text-primary" />
-                    <span className="text-muted-foreground">€ {price}.00</span>
+                    <span className="text-muted-foreground">€ {formattedPrice}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Action buttons */}
           <div className="flex flex-col gap-2 ml-4">
             <ScheduleAppointmentModal nutritionistId={id}>
               <Button size="lg" variant="schedule" className="w-64">
