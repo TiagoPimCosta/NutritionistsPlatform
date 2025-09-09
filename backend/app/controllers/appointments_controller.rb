@@ -26,6 +26,9 @@ class AppointmentsController < ApplicationController
         guest: setup_guest
       })
 
+      apps = Appointment.where(guest: @appointment.guest, status_id: 1)
+      apps.update_all(status_id: 4)
+
       if @appointment.save
         render json: { status: 201, message: "Appointment created", id: @appointment.id }, status: :created
       else
