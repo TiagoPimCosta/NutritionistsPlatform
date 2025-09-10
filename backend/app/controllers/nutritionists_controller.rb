@@ -30,6 +30,14 @@ class NutritionistsController < ApplicationController
     }
   end
 
+  # GET /nutritionists/:id/pending_requests
+  def pending_requests
+    nutritionist = Nutritionist.find(params[:id])
+    appointments = Appointment.where(nutritionist_id: nutritionist.id, status_id: 1).includes(:guest)
+
+    render json: appointments.as_json(include: { guest: { only: [ :id, :name ] } })
+  end
+
   # GET /nutritionists/1
   def show
     render json: @nutritionist

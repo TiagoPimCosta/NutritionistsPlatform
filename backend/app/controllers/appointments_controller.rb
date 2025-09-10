@@ -38,15 +38,16 @@ class AppointmentsController < ApplicationController
 
   # POST /appointments/:id/accept
   def accept
-    apps = Appointment.where(nutritionist: @appointment.nutritionist, date: @appointment.date)
-    apps.update_all(status_id: 1)
+    apps = Appointment.where(nutritionist: @appointment.nutritionist, date: @appointment.date, status_id: 1)
+    apps.update_all(status_id: 3)
     @appointment.update(status_id: 2)
-    render json: { status: 200, message: "Appointment created" }
+    render json: { status: 200, message: "Appointment accepted" }
   end
 
   # POST /appointments/:id/reject
   def reject
-      render json: { string: "teste" }
+    @appointment.update(status_id: 3)
+    render json: { status: 200, message: "Appointment rejected" }
   end
 
   private
@@ -64,6 +65,10 @@ class AppointmentsController < ApplicationController
       email = appointment_params[:email]
       name = appointment_params[:name]
       guest = Guest.find_by(email: email)
+
+      if guest.present? && name.present? && guest.name != name
+        guest.update(name: name)
+      end
 
       return guest unless guest.blank?
 

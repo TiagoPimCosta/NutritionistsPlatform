@@ -4,16 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { AnswerAppointmentRequestModal } from "./AnswerAppointmentRequestModal";
+import type { NutritionistPendingAppointmentsObj } from "@/services/nutritionists/queries";
 
 interface PendingAppointmentCard {
-  date: string;
-  guest: {
-    name: string;
-  };
+  appointment: NutritionistPendingAppointmentsObj;
 }
 
 const PendingAppointmentCard = (props: PendingAppointmentCard) => {
-  const { date, guest } = props;
+  const { appointment } = props;
+  const { id, date, guest, nutritionist_id } = appointment;
+
   const nameInitials = guest.name
     .split(" ")
     .map((n) => n[0])
@@ -56,7 +56,12 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
         </div>
       </CardContent>
       <CardFooter className="border-t p-0 pt-0">
-        <AnswerAppointmentRequestModal date={date} guest={guest.name}>
+        <AnswerAppointmentRequestModal
+          date={date}
+          guest={guest.name}
+          appointmentId={id}
+          nutritionistId={nutritionist_id}
+        >
           <Button variant="anwserRequest" className="w-full rounded-t-none rounded-b-xl font-bold">
             Answer Request
           </Button>

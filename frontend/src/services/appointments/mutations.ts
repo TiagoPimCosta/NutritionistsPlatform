@@ -1,3 +1,4 @@
+import queryClient from "@/config/queryClient";
 import { toastError, toastSuccess } from "@/utils/toasts";
 import { useMutation } from "@tanstack/react-query";
 
@@ -31,6 +32,78 @@ export function useCreateAppointment() {
     },
     onSuccess: (data) => {
       toastSuccess(data.message);
+    },
+  });
+}
+
+interface AcceptAppointmentParams {
+  appointmentId: number;
+  nutritionistId: number;
+}
+
+export async function acceptAppointment(params: AcceptAppointmentParams) {
+  const { appointmentId } = params;
+  const url = new URL(`http://localhost:3000/appointments/${appointmentId}/accept`);
+
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function useAcceptAppointment() {
+  return useMutation<ApiResponseMessage, Error, AcceptAppointmentParams>({
+    mutationFn: async (vars) => {
+      const response = await acceptAppointment(vars);
+      const data = await response.json();
+      return data as ApiResponseMessage;
+    },
+    onError: (error) => {
+      toastError(error.message);
+    },
+    onSuccess: (data, vars) => {
+      toastSuccess(data.message);
+      queryClient.invalidateQueries({
+        queryKey: ["nutritionist_pending_appointments", vars.nutritionistId],
+      });
+    },
+  });
+}
+
+interface RejectAppointmentParams {
+  appointmentId: number;
+  nutritionistId: number;
+}
+
+export async function rejectAppointment(params: RejectAppointmentParams) {
+  const { appointmentId } = params;
+  const url = new URL(`http://localhost:3000/appointments/${appointmentId}/reject`);
+
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function useRejectAppointment() {
+  return useMutation<ApiResponseMessage, Error, RejectAppointmentParams>({
+    mutationFn: async (vars) => {
+      const response = await rejectAppointment(vars);
+      const data = await response.json();
+      return data as ApiResponseMessage;
+    },
+    onError: (error) => {
+      toastError(error.message);
+    },
+    onSuccess: (data, vars) => {
+      toastSuccess(data.message);
+      queryClient.invalidateQueries({
+        queryKey: ["nutritionist_pending_appointments", String(vars.nutritionistId)],
+      });
     },
   });
 }

@@ -1,43 +1,40 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { GetNutritionistsSchema } from "@/schemas/nutritionists/getNutritionistsSchema";
-import type { PaginationParamsSchema } from "@/schemas/paginationSchema";
-import { parseQueryParams } from "@/utils/services";
 
-export interface NutritionistObj {
+export interface NutritionistPendingAppointmentsObj {
   id: number;
-  name: string;
-  street: string;
-  city: string;
-  price: number;
-  services: [
-    {
-      name: string;
-    },
-    {
-      name: string;
-    },
-  ];
+  date: string;
+  status_id: number;
+  nutritionist_id: number;
+  created_at: string;
+  updated_at: string;
+  guest_id: number;
+  guest: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
-export type GetNutritionistsParams = GetNutritionistsSchema & Partial<PaginationParamsSchema>;
-export type GetLinesResponse = ApiGetListResponse<NutritionistObj[]> & Pagination;
 
-export function getNutritionists(params: GetNutritionistsParams) {
-  const queryParams = parseQueryParams(params);
-  const queryString = new URLSearchParams(queryParams as Record<string, string>).toString();
+export type GetNutritionistPendingAppointmentsParams = { id: string };
+export type GetNutritionistPendingAppointmentsResponse = NutritionistPendingAppointmentsObj[];
 
-  const url = new URL("http://localhost:3000/nutritionists");
-  url.search = queryString;
+export function getNutritionistPendingAppointments(
+  params: GetNutritionistPendingAppointmentsParams
+) {
+  const url = new URL("http://localhost:3000/nutritionists/" + params.id + "/pending_requests");
 
   return fetch(url);
 }
 
-export function useGetNutritionists(params: GetNutritionistsParams) {
+export function useGetNutritionistPendingAppointments(
+  params: GetNutritionistPendingAppointmentsParams
+) {
   return useQuery({
-    queryKey: ["nutritionists", params],
+    queryKey: ["nutritionist_pending_appointments", params.id],
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const response = await getNutritionists(params);
-      return (await response.json()) as GetLinesResponse;
+      const response = await getNutritionistPendingAppointments(params);
+      return (await response.json()) as GetNutritionistPendingAppointmentsResponse;
     },
   });
 }

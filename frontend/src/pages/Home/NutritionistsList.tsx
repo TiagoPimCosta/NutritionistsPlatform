@@ -1,5 +1,5 @@
 import ProfessionalCard from "./ProfessionalCard";
-import { useGetNutritionists } from "@/services/nutritionists/queries";
+import { useGetNutritionists } from "@/services/nutritionistsServices/queries";
 import { getRouteApi } from "@tanstack/react-router";
 import CustomPagination from "@/components/CustomPagination";
 
@@ -23,19 +23,33 @@ export default function NutritionistsList() {
     return <div className="container mx-auto px-4 py-8 space-y-6">Loading Nutritionists...</div>;
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {data?.items?.map((professional) => (
-        <ProfessionalCard key={professional.id} {...professional} />
-      ))}
+  const nutritionistsCards = () => {
+    if (!data?.items?.length) {
+      return (
+        <div className="pt-5 h-24 text-center text-muted-foreground text-lg">
+          There are currently no nutritionists available. Please check back later.
+        </div>
+      );
+    } else {
+      return (
+        <>
+          {data.items.map((nutritionistsService) => (
+            <ProfessionalCard
+              key={nutritionistsService.id}
+              nutritionistsService={nutritionistsService}
+            />
+          ))}
+          {data && (
+            <CustomPagination
+              currentPage={data.page}
+              totalPages={data.total_pages}
+              onPageChange={handleChangePage}
+            />
+          )}
+        </>
+      );
+    }
+  };
 
-      {data && (
-        <CustomPagination
-          currentPage={data.page}
-          totalPages={data.total_pages}
-          onPageChange={handleChangePage}
-        />
-      )}
-    </div>
-  );
+  return <div className="container mx-auto px-4 py-8 space-y-6">{nutritionistsCards()}</div>;
 }

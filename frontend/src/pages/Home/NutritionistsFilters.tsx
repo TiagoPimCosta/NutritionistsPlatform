@@ -1,8 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getRouteApi } from "@tanstack/react-router";
 import { LocateFixed } from "lucide-react";
+import { useState } from "react";
+
+const route = getRouteApi("/");
 
 export default function NutritionistsFilters() {
+  const navigate = route.useNavigate();
+  const searchParams = route.useSearch();
+
+  const [filter, useFilter] = useState(searchParams.filter ?? "");
+
+  const handleChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useFilter(e.target.value);
+  };
+  const handleInputPressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.key === "Enter" ? handleChangeFilter() : null;
+  };
+
+  const handleChangeFilter = () => {
+    navigate({ search: (prev) => ({ ...prev, page: 1, filter: filter || undefined }) });
+  };
+
   return (
     <div className="bg-nutritionistsFilter text-nutritionistsFilter-foreground">
       <div className="container mx-auto px-4 py-8">
@@ -11,6 +31,9 @@ export default function NutritionistsFilters() {
             <Input
               placeholder="Name, service, online appointment..."
               className="h-14 text-lg border-0 shadow-lg pl-6"
+              value={filter}
+              onChange={handleChangeInputValue}
+              onKeyDown={handleInputPressEnter}
             />
           </div>
           <div className="flex-1 relative">
@@ -23,6 +46,7 @@ export default function NutritionistsFilters() {
           <Button
             size="lg"
             className="h-14 px-12 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+            onClick={() => handleChangeFilter()}
           >
             Search
           </Button>

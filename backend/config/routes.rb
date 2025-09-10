@@ -7,7 +7,11 @@ Rails.application.routes.draw do
     end
   end
   resources :nutritionists_services
-  resources :nutritionists
+  resources :nutritionists do
+    member do
+      get "pending_requests"
+    end
+  end
   resources :services
   resources :guests
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
