@@ -3,9 +3,39 @@ class NutritionistsController < ApplicationController
 
   # GET /nutritionists
   def index
-    @nutritionists = Nutritionist.all
+    filter = params[:filter].to_s.strip
+    page = params[:page].to_i > 0 ? params[:page].to_i : 1
+    per_page = params[:per_page].to_i > 0 ? params[:per_page].to_i : 10
 
-    render json: @nutritionists
+    @nutritionists = Nutritionist.includes(:services).all
+
+    if filter.present?
+      @nutritionists = @nutritionists
+        .left_joins(:services)
+        .where(
+          "nutritionists.name ILIKE :filter OR services.name ILIKE :filter",
+          filter: "%#{filter}%"
+        ).order(:id).distinct
+    end
+
+    total_count = @nutritionists.count
+    @nutritionists = @nutritionists.offset((page - 1) * per_page).limit(per_page)
+
+    render json: {
+      items: @nutritionists.as_json(include: { services: { only: [ :id, :name ] } }),
+      page: page,
+      per_page: per_page,
+      total_count: total_count,
+      total_pages: (total_count / per_page.to_f).ceil
+    }
+  end
+
+  # GET /nutritionists/:id/pending_requests
+  def pending_requests
+    nutritionist = Nutritionist.find(params[:id])
+    appointments = Appointment.where(nutritionist_id: nutritionist.id, status_id: 1).includes(:guest)
+
+    render json: appointments.as_json(include: { guest: { only: [ :id, :name ] } })
   end
 
   # GET /nutritionists/1

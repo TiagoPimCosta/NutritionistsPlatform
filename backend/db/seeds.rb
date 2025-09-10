@@ -7,3 +7,44 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+AppointmentStatus.create(status: "Pending")
+AppointmentStatus.create(status: "Accepted")
+AppointmentStatus.create(status: "Rejected")
+AppointmentStatus.create(status: "Canceled")
+
+Service.create(name: "Dietético")
+Service.create(name: "Desportivo")
+Service.create(name: "Clínico")
+Service.create(name: "Infantil")
+Service.create(name: "Vegetariano")
+Service.create(name: "Integrativo")
+
+Nutritionist.create(name: "Carla Santos")
+Nutritionist.create(name: "Miguel Almeida")
+Nutritionist.create(name: "Patrícia Gomes")
+Nutritionist.create(name: "Tiago Correia")
+Nutritionist.create(name: "Sofia Costa")
+
+NutritionistsService.create(street: "Rua de Santa Catarina 450", city: "Porto", price: 1490, nutritionist_id: 1, service_id: 1)
+NutritionistsService.create(street: "Avenida da República 250", city: "Vila Nova de Gaia", price: 1890, nutritionist_id: 2, service_id: 1)
+NutritionistsService.create(street: "Praça Mouzinho de Albuquerque 12", city: "Porto", price: 2100, nutritionist_id: 2, service_id: 2)
+NutritionistsService.create(street: "Rua da Junqueira 88", city: "Lisboa", price: 1750, nutritionist_id: 3, service_id: 3)
+NutritionistsService.create(street: "Avenida da Boavista 1234", city: "Porto", price: 1995, nutritionist_id: 3, service_id: 4)
+NutritionistsService.create(street: "Rua Brito Capelo 320", city: "Matosinhos", price: 2250, nutritionist_id: 4, service_id: 1)
+NutritionistsService.create(street: "Avenida 25 de Abril 90", city: "Braga", price: 1620, nutritionist_id: 4, service_id: 4)
+NutritionistsService.create(street: "Rua Direita 15", city: "Guimarães", price: 1830, nutritionist_id: 5, service_id: 2)
+NutritionistsService.create(street: "Avenida Fernão Magalhães 800", city: "Coimbra", price: 2050, nutritionist_id: 5, service_id: 5)
+
+Guest.create(name: "Ana Martins", email: "anamartins@gmail.com")
+Guest.create(name: "João Carvalho", email: "joaocarvalho@gmail.com")
+Guest.create(name: "Marta Sousa", email: "martasousa@gmail.com")
+
+=begin
+Appointment.create(date: "2025-10-06 10:00:00.000", status_id: 1, nutritionist_id: 3, guest_id: 2)
+Appointment.create(date: "2025-10-06 10:30:00.000", status_id: 1, nutritionist_id: 2, guest_id: 1)
+Appointment.create(date: "2025-10-06 10:30:00.000", status_id: 1, nutritionist_id: 2, guest_id: 3)
+Appointment.create(date: "2025-10-07 18:00:00.000", status_id: 1, nutritionist_id: 1, guest_id: 2)
+Appointment.create(date: "2025-10-07 18:00:00.000", status_id: 1, nutritionist_id: 3, guest_id: 3)
+Appointment.create(date: "2025-10-08 12:00:00.000", status_id: 1, nutritionist_id: 4, guest_id: 1)
+=end

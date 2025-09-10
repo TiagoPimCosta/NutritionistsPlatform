@@ -7,27 +7,42 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAcceptAppointment, useRejectAppointment } from "@/services/appointments/mutations";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 interface AnswerAppointmentRequestModalProps {
   children: React.ReactNode;
+  appointmentId: number;
+  nutritionistId: number;
   date: string;
   guest: string;
 }
 
 export function AnswerAppointmentRequestModal(props: AnswerAppointmentRequestModalProps) {
-  const { children, date, guest } = props;
+  const { children, appointmentId, nutritionistId, date, guest } = props;
 
-  const handleRejectAppointment = () => {
-    console.log("Reject Appointment");
+  const [open, setOpen] = useState(false);
+
+  const acceptAppointmentMutation = useAcceptAppointment();
+  const rejectAppointmentMutation = useRejectAppointment();
+
+  const handleCloseModal = () => {
+    setOpen(false);
   };
 
-  const handleAcceptAppointment = () => {
-    console.log("Accept Appointment");
+  const handleAcceptAppointment = async () => {
+    await acceptAppointmentMutation.mutateAsync({ appointmentId, nutritionistId });
+    handleCloseModal();
+  };
+
+  const handleRejectAppointment = async () => {
+    await rejectAppointmentMutation.mutateAsync({ appointmentId, nutritionistId });
+    handleCloseModal();
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="pb-2">

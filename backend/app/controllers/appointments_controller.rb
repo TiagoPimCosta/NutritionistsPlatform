@@ -1,11 +1,14 @@
 class AppointmentsController < ApplicationController
-  before_action :set_appointment, only: %i[ show update destroy ]
+  before_action :set_appointment, only: %i[ accept reject ]
 
   # GET /appointments
   def index
-    @appointments = Appointment.all
+    @appointments = Appointment.includes(:guest, :nutritionist).all
 
-    render json: @appointments
+    render json: @appointments.as_json(include: {
+      guest: { only: [ :name ] },
+      nutritionist: { only: [ :name ] }
+    })
   end
 
   # GET /appointments/1
@@ -15,37 +18,60 @@ class AppointmentsController < ApplicationController
 
   # POST /appointments
   def create
-    @appointment = Appointment.new(appointment_params)
+    @appointment = Appointment.new(
+      {
+        date: appointment_params[:date],
+        status_id: 1,
+        nutritionist_id: appointment_params[:nutritionist_id],
+        guest: setup_guest
+      })
 
-    if @appointment.save
-      render json: @appointment, status: :created, location: @appointment
-    else
-      render json: @appointment.errors, status: :unprocessable_entity
-    end
+      apps = Appointment.where(guest: @appointment.guest, status_id: 1)
+      apps.update_all(status_id: 4)
+
+      if @appointment.save
+        render json: { status: 201, message: "Appointment created", id: @appointment.id }, status: :created
+      else
+        render json: @appointment.errors, message: "Error creating appointment", status: :unprocessable_entity
+      end
   end
 
-  # PATCH/PUT /appointments/1
-  def update
-    if @appointment.update(appointment_params)
-      render json: @appointment
-    else
-      render json: @appointment.errors, status: :unprocessable_entity
-    end
+  # POST /appointments/:id/accept
+  def accept
+    apps = Appointment.where(nutritionist: @appointment.nutritionist, date: @appointment.date, status_id: 1)
+    apps.update_all(status_id: 3)
+    @appointment.update(status_id: 2)
+    render json: { status: 200, message: "Appointment accepted" }
   end
 
-  # DELETE /appointments/1
-  def destroy
-    @appointment.destroy!
+  # POST /appointments/:id/reject
+  def reject
+    @appointment.update(status_id: 3)
+    render json: { status: 200, message: "Appointment rejected" }
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_appointment
-      @appointment = Appointment.find(params.expect(:id))
+      @appointment = Appointment.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def appointment_params
-      params.expect(appointment: [ :date, :status, :nutritionist_id, :guest_id ])
+      params.permit([ :date, :name, :email, :nutritionist_id ])
+    end
+
+    def setup_guest
+      email = appointment_params[:email]
+      name = appointment_params[:name]
+      guest = Guest.find_by(email: email)
+
+      if guest.present? && name.present? && guest.name != name
+        guest.update(name: name)
+      end
+
+      return guest unless guest.blank?
+
+      Guest.create(name: name, email: email)
     end
 end

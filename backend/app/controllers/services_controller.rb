@@ -10,6 +10,7 @@ class ServicesController < ApplicationController
 
   # GET /services/1
   def show
+    return render json: [ "invalid service" ], status: :unprocessable_entity if @service.blank?
     render json: @service
   end
 
@@ -26,6 +27,7 @@ class ServicesController < ApplicationController
 
   # PATCH/PUT /services/1
   def update
+    return render json: [ "invalid service" ], status: :unprocessable_entity if @service.blank?
     if @service.update(service_params)
       render json: @service
     else
@@ -35,6 +37,7 @@ class ServicesController < ApplicationController
 
   # DELETE /services/1
   def destroy
+    return render json: [ "invalid service" ], status: :unprocessable_entity if @service.blank?
     @service.destroy!
   end
 

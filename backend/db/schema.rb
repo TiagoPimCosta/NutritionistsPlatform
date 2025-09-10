@@ -10,17 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_07_141614) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_10_121500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "appointments", force: :cascade do |t|
-    t.datetime "date"
-    t.boolean "status"
-    t.bigint "nutritionist_id", null: false
-    t.bigint "guest_id", null: false
+  create_table "appointment_statuses", force: :cascade do |t|
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "appointments", force: :cascade do |t|
+    t.datetime "date"
+    t.integer "status_id"
+    t.bigint "nutritionist_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "guest_id", null: false
     t.index ["guest_id"], name: "index_appointments_on_guest_id"
     t.index ["nutritionist_id"], name: "index_appointments_on_nutritionist_id"
   end
@@ -34,8 +40,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_07_141614) do
 
   create_table "nutritionists", force: :cascade do |t|
     t.string "name"
-    t.string "address"
-    t.integer "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -45,6 +49,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_07_141614) do
     t.bigint "service_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "street"
+    t.string "city"
+    t.integer "price"
     t.index ["nutritionist_id"], name: "index_nutritionists_services_on_nutritionist_id"
     t.index ["service_id"], name: "index_nutritionists_services_on_service_id"
   end
@@ -55,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_07_141614) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "appointments", "appointment_statuses", column: "status_id"
   add_foreign_key "appointments", "guests"
   add_foreign_key "appointments", "nutritionists"
   add_foreign_key "nutritionists_services", "nutritionists"
