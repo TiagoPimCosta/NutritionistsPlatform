@@ -36,7 +36,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
             <div className="flex flex-col gap-4 w-full justify-between">
               <div className="flex flex-col">
                 <h3 className="text-2xl mb-1">{guest.name}</h3>
-                <span className="text-sm text-muted-foreground">Online Follow-up</span>
+                <span className="text-sm text-muted-foreground">Online appointment</span>
               </div>
 
               <div className="flex flex-col gap-2">
