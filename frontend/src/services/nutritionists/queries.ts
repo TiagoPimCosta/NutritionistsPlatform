@@ -22,7 +22,7 @@ export type GetNutritionistPendingAppointmentsResponse = NutritionistPendingAppo
 export function getNutritionistPendingAppointments(
   params: GetNutritionistPendingAppointmentsParams
 ) {
-  const url = new URL(ENV.VITE_API_URL + params.id + "/pending_requests");
+  const url = new URL(ENV.VITE_API_URL + "nutritionists/" + params.id + "/pending_requests");
 
   return fetch(url);
 }
