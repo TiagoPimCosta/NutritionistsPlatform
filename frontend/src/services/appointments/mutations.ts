@@ -1,6 +1,6 @@
 import queryClient from "@/config/queryClient";
 import { toastError, toastSuccess } from "@/utils/toasts";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface CreateAppointmentBodyParams {
   nutritionist_id: number;
@@ -66,7 +66,7 @@ export function useAcceptAppointment() {
     onSuccess: (data, vars) => {
       toastSuccess(data.message);
       queryClient.invalidateQueries({
-        queryKey: ["nutritionist_pending_appointments", vars.nutritionistId],
+        queryKey: ["nutritionist_pending_appointments", String(vars.nutritionistId)],
       });
     },
   });
