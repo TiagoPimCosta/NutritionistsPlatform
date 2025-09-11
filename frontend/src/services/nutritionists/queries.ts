@@ -1,3 +1,4 @@
+import { ENV } from "@/utils/consts";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 export interface NutritionistPendingAppointmentsObj {
@@ -21,7 +22,7 @@ export type GetNutritionistPendingAppointmentsResponse = NutritionistPendingAppo
 export function getNutritionistPendingAppointments(
   params: GetNutritionistPendingAppointmentsParams
 ) {
-  const url = new URL("http://localhost:3000/nutritionists/" + params.id + "/pending_requests");
+  const url = new URL(ENV.VITE_API_URL + params.id + "/pending_requests");
 
   return fetch(url);
 }

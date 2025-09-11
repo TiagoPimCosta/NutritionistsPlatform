@@ -11,7 +11,7 @@ export interface CreateAppointmentBodyParams {
 }
 
 export async function createAppointment(body: CreateAppointmentBodyParams) {
-  const url = new URL(ENV.VITE_API_URL + "/appointments");
+  const url = new URL(ENV.VITE_API_URL + "appointments");
   return fetch(url, {
     method: "POST",
     headers: {
@@ -44,7 +44,7 @@ interface AcceptAppointmentParams {
 
 export async function acceptAppointment(params: AcceptAppointmentParams) {
   const { appointmentId } = params;
-  const url = new URL(ENV.VITE_API_URL + `/appointments/${appointmentId}/accept`);
+  const url = new URL(ENV.VITE_API_URL + `appointments/${appointmentId}/accept`);
 
   return fetch(url, {
     method: "POST",
@@ -80,7 +80,7 @@ interface RejectAppointmentParams {
 
 export async function rejectAppointment(params: RejectAppointmentParams) {
   const { appointmentId } = params;
-  const url = new URL(ENV.VITE_API_URL + `/appointments/${appointmentId}/reject`);
+  const url = new URL(ENV.VITE_API_URL + `appointments/${appointmentId}/reject`);
 
   return fetch(url, {
     method: "POST",

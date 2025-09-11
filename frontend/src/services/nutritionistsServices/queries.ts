@@ -2,6 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { GetNutritionistsServicesSchema } from "@/schemas/nutritionistsServices/getNutritionistsServicesSchema";
 import type { PaginationParamsSchema } from "@/schemas/paginationSchema";
 import { parseQueryParams } from "@/utils/services";
+import { ENV } from "@/utils/consts";
 
 export interface NutritionistsServicesObj {
   id: number;
@@ -30,7 +31,7 @@ export function getNutritionistsServices(params: GetNutritionistsServicesParams)
   const queryParams = parseQueryParams(params);
   const queryString = new URLSearchParams(queryParams as Record<string, string>).toString();
 
-  const url = new URL("http://localhost:3000/nutritionists_services");
+  const url = new URL(ENV.VITE_API_URL + "nutritionists_services");
   url.search = queryString;
 
   return fetch(url);
