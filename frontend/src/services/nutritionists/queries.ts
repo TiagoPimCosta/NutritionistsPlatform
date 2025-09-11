@@ -34,6 +34,10 @@ export function useGetNutritionistPendingAppointments(
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await getNutritionistPendingAppointments(params);
+      if (!response.ok) {
+        const error = new Error(`Request failed with status ${response.status}`);
+        throw error;
+      }
       return (await response.json()) as GetNutritionistPendingAppointmentsResponse;
     },
   });

@@ -22,7 +22,12 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
     .map((n) => n[0])
     .join("");
 
-  const formattedPrice = (price / 100).toFixed(2);
+  const formattedPrice = new Intl.NumberFormat("en-EN", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  }).format(price / 100);
 
   return (
     <Card className="p-6 shadow-md hover:shadow-lg transition-shadow">
@@ -63,7 +68,7 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Banknote className="h-5 w-5 text-primary" />
-                    <span className="text-muted-foreground">€ {formattedPrice}</span>
+                    <span className="text-muted-foreground">{formattedPrice}</span>
                   </div>
                 </div>
               </div>

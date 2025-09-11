@@ -10,13 +10,14 @@ export default function NutritionistsFilters() {
   const navigate = route.useNavigate();
   const searchParams = route.useSearch();
 
-  const [filter, useFilter] = useState(searchParams.filter ?? "");
+  const [filter, setFilter] = useState(searchParams.filter ?? "");
 
   const handleChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    useFilter(e.target.value);
+    setFilter(e.target.value);
   };
+
   const handleInputPressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    e.key === "Enter" ? handleChangeFilter() : null;
+    if (e.key === "Enter") handleChangeFilter();
   };
 
   const handleChangeFilter = () => {
@@ -46,7 +47,7 @@ export default function NutritionistsFilters() {
           <Button
             size="lg"
             className="h-14 px-12 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
-            onClick={() => handleChangeFilter()}
+            onClick={handleChangeFilter}
           >
             Search
           </Button>

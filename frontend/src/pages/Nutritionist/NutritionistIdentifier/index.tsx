@@ -1,4 +1,4 @@
-import PendingAppointments from "./PendingAppointments";
+import PendingAppointments from "@/components/NutritionistIdentifier/PendingAppointments";
 
 export default function NutritionistPage() {
   return (

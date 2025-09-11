@@ -30,25 +30,23 @@ export default function NutritionistsList() {
           There are currently no nutritionists available. Please check back later.
         </div>
       );
-    } else {
-      return (
-        <>
-          {data.items.map((nutritionistsService) => (
-            <ProfessionalCard
-              key={nutritionistsService.id}
-              nutritionistsService={nutritionistsService}
-            />
-          ))}
-          {data && (
-            <CustomPagination
-              currentPage={data.page}
-              totalPages={data.total_pages}
-              onPageChange={handleChangePage}
-            />
-          )}
-        </>
-      );
     }
+
+    return (
+      <>
+        {data.items.map((nutritionistsService) => (
+          <ProfessionalCard
+            key={nutritionistsService.id}
+            nutritionistsService={nutritionistsService}
+          />
+        ))}
+        <CustomPagination
+          currentPage={data.page}
+          totalPages={data.total_pages}
+          onPageChange={handleChangePage}
+        />
+      </>
+    );
   };
 
   return <div className="container mx-auto px-4 py-8 space-y-6">{nutritionistsCards()}</div>;

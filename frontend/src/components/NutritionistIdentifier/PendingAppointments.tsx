@@ -14,7 +14,7 @@ const route = getRouteApi("/nutritionist/$nutritionistId/");
 export default function PendingAppointments() {
   const params = route.useParams();
 
-  const { data, isLoading } = useGetNutritionistPendingAppointments({
+  const { data, isLoading, isError } = useGetNutritionistPendingAppointments({
     id: params.nutritionistId,
   });
 
@@ -26,6 +26,10 @@ export default function PendingAppointments() {
     );
   }
 
+  if (isError) {
+    return <div className="container mx-auto px-4 py-8 space-y-6">Nutritionist doesn't exist</div>;
+  }
+
   const appointmentCards = () => {
     if (!data?.length) {
       return (
@@ -33,21 +37,21 @@ export default function PendingAppointments() {
           There are currently no pending requests. Please check back later.
         </div>
       );
-    } else {
-      return (
-        <Carousel className="w-full">
-          <CarouselContent className="w-full">
-            {data.map((appointment) => (
-              <CarouselItem key={appointment.id} className="basis-1/3">
-                <PendingAppointmentCard appointment={appointment} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      );
     }
+
+    return (
+      <Carousel className="w-full">
+        <CarouselContent className="w-full">
+          {data.map((appointment) => (
+            <CarouselItem key={appointment.id} className="basis-1/3">
+              <PendingAppointmentCard appointment={appointment} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    );
   };
 
   return (

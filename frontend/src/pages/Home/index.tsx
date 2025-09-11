@@ -1,5 +1,5 @@
-import NutritionistsList from "./NutritionistsList";
-import NutritionistsFilters from "./NutritionistsFilters";
+import NutritionistsList from "../../components/Home/NutritionistsList";
+import NutritionistsFilters from "../../components/Home/NutritionistsFilters";
 
 export default function HomePage() {
   return (
