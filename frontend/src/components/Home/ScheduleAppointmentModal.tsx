@@ -24,6 +24,7 @@ import {
 } from "@/schemas/appointments";
 import { parseAppointmentDate } from "@/utils/date";
 import { useCreateAppointment } from "@/services/appointments/mutations";
+import FormError from "../FormError";
 
 interface ScheduleAppointmentModalProps {
   children: React.ReactNode;
@@ -76,18 +77,14 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
               Name
             </Label>
             <Input id="name" type="text" placeholder="Name" {...register("name")} />
-            {errors.name?.message && (
-              <span className="px-1 text-sm text-destructive">{errors.name.message}</span>
-            )}
+            <FormError errorMessage={errors.name?.message} />
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="email" className="sr-only">
               Email
             </Label>
             <Input id="email" type="email" placeholder="Email" {...register("email")} />
-            {errors.email?.message && (
-              <span className="px-1 text-sm text-destructive">{errors.email.message}</span>
-            )}
+            <FormError errorMessage={errors.email?.message} />
           </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex gap-4">
@@ -140,9 +137,7 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
                 />
               </div>
             </div>
-            {errors.date?.message && (
-              <span className="px-1 text-sm text-destructive">{String(errors.date.message)}</span>
-            )}
+            <FormError errorMessage={errors.date?.message} />
           </div>
           <DialogFooter>
             <DialogClose asChild>

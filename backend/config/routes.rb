@@ -1,19 +1,16 @@
 Rails.application.routes.draw do
-  resources :appointment_statuses
-  resources :appointments, only: [ :show, :index, :create ] do
+  resources :appointments, only: [ :create ] do
     member do
       post "accept"
       post "reject"
     end
   end
-  resources :nutritionists_services
-  resources :nutritionists do
+  resources :nutritionists_services, only: [ :index ]
+  resources :nutritionists, only: [] do
     member do
       get "pending_requests"
     end
   end
-  resources :services
-  resources :guests
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

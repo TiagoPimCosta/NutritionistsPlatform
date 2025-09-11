@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { AnswerAppointmentRequestModal } from "./AnswerAppointmentRequestModal";
 import type { NutritionistPendingAppointmentsObj } from "@/services/nutritionists/queries";
+import dayjsUtc from "dayjs/plugin/utc";
+
+dayjs.extend(dayjsUtc);
 
 interface PendingAppointmentCard {
   appointment: NutritionistPendingAppointmentsObj;
@@ -20,7 +23,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
     .join("");
 
   const appointmentDate = dayjs(date).format("DD MMMM YYYY");
-  const appointmentHour = dayjs(date).format("HH:mm a");
+  const appointmentHour = dayjs(date).utc().format("HH:mm a");
 
   return (
     <Card className=" shadow-md hover:shadow-lg transition-shadow pb-0">
@@ -36,7 +39,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
             <div className="flex flex-col gap-4 w-full justify-between">
               <div className="flex flex-col">
                 <h3 className="text-2xl mb-1">{guest.name}</h3>
-                <span className="text-sm text-muted-foreground">Online Follow-up</span>
+                <span className="text-sm text-muted-foreground">Online appointment</span>
               </div>
 
               <div className="flex flex-col gap-2">
