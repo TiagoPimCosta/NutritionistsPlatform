@@ -12,7 +12,7 @@ services:
     working_dir: /app/backend
     volumes:
       - ./backend:/app/backend
-    command: bash -c "bundle install && until pg_isready -h postgres -U backend; do echo 'Waiting for Postgres...'; sleep 1; done && bundle exec rails db:create db:migrate db:seed && bundle exec rails s -b 0.0.0.0"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && until pg_isready -h postgres -U backend; do echo 'Waiting for Postgres...'; sleep 1; done && bundle exec rails db:create db:migrate db:seed && bundle exec rails s -b 0.0.0.0"
     environment:
       - RAILS_ENV=development
     ports:
