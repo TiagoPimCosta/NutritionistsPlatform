@@ -40,6 +40,9 @@ export function AnswerAppointmentRequestModal(props: AnswerAppointmentRequestMod
     await rejectAppointmentMutation.mutateAsync({ appointmentId, nutritionistId });
     handleCloseModal();
   };
+  
+  const appointmentDate = dayjs(date).format("DD MMMM YYYY");
+  const appointmentHour = dayjs(date).utc().format("HH:mm a");
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -49,8 +52,8 @@ export function AnswerAppointmentRequestModal(props: AnswerAppointmentRequestMod
           <DialogTitle>Answer appointment request</DialogTitle>
         </DialogHeader>
         <div>
-          Would you like to accept or reject {guest}'s appointment request for{" "}
-          {dayjs(date).format("DD MMMM YYYY")} at {dayjs(date).format("HH:mm a")}?
+          Would you like to accept or reject {guest}'s appointment request for {appointmentDate} at{" "}
+          {appointmentHour}?
         </div>
         <DialogFooter>
           <Button variant="destructive" onClick={handleRejectAppointment}>
