@@ -12,7 +12,7 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/tmp/*
+backend/tmp/*
 !/log/.keep
 !/tmp/.keep
 
@@ -30,6 +30,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+backend/log
 
 node_modules
 .DS_Store

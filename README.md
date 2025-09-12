@@ -7,7 +7,30 @@ This project is a full-stack application with:
 
 ---
 
-## 📦 Prerequisites
+## Running with Docker Compose
+
+### 📦 Prerequisites
+
+- Docker
+- Docker Compose
+
+In the terminal run:
+
+```bash
+docker compose up --build
+```
+
+This will:
+
+- Start a Postgres database on port 5432
+- Build and start the Rails backend on port 3000
+- Start the Vite frontend on port 3030
+
+To view the application just access http://localhost:3030
+
+## Running Manually
+
+### 📦 Prerequisites
 
 Make sure you have the following installed:
 
@@ -18,9 +41,17 @@ Make sure you have the following installed:
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 - [PostgreSQL](https://www.postgresql.org/) (or the database configured in the backend)
 
----
-
 ## ⚙️ Setup
+
+## Postgresql
+
+```bash
+# brew starts a postgresql service
+brew services start postgresql
+
+# To stop this service after the test you need to run
+brew services stop postgresql
+```
 
 ## Backend
 
@@ -55,6 +86,8 @@ yarn start
 
 ## ⚙️ Run
 
+## Backend
+
 ```bash
 cd backend
 bin/rails server
@@ -66,7 +99,3 @@ bin/rails server
 cd frontend
 npm start
 ```
-
-docker build -t nutritionists-frontend:prod --target prod .
-
-docker run --rm -p 8080:80 nutritionists-frontend:prod
