@@ -9,6 +9,7 @@ module AppointmentsServices
     def call
       setup_appointment
       reject_appointment
+      # Send Reject Email
       {
         success: @appointment.errors.empty?,
         records: nil,

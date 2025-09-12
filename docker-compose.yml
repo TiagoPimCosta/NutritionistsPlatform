@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=backend
+      - POSTGRES_PASSWORD=backendPassword
+      - POSTGRES_DB=backend_production_postgres
+    ports:
+      - 5432:5432
+  backend:
+    build: ./backend
+    working_dir: /app/backend
+    volumes:
+      - ./backend:/app/backend
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && until pg_isready -h postgres -U backend; do echo 'Waiting for Postgres...'; sleep 1; done && bundle exec rails db:create db:migrate db:seed && bundle exec rails s -b 0.0.0.0"
+    environment:
+      - RAILS_ENV=production
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+  frontend:
+    image: node:24-alpine
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend
+    command: >
+      sh -c "
+        echo '=== Install pnpm ===' &&
+        npm install -g pnpm &&
+        echo '=== STEP 1: Install dependencies ===' &&
+        pnpm install &&
+        echo '=== STEP 2: Build project ===' &&
+        pnpm run build &&
+        echo '=== STEP 3: Start dev server ===' &&
+        pnpm dev
+      "
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://localhost:3000/
+    ports:
+      - 3030:5173

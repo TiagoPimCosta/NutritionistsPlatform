@@ -1,9 +1,29 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  user: tiagopimcosta
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: backend
+  password: backendPassword
+  host: postgres
+  port: 5432
 
 development:
   <<: *default
-  database: backend_development
+  username:
+  host: localhost
+  database: backend_development_postgres
+
+production:
+  <<: *default
+  database: backend_production_postgres
+
+cable:
+  <<: *default
+  database: backend_production_postgres
+
+queue:
+  <<: *default
+  database: backend_production_postgres
+
+cache:
+  <<: *default
+  database: backend_production_postgres

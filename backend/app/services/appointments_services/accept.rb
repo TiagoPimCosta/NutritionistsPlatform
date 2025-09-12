@@ -10,6 +10,7 @@ module AppointmentsServices
       setup_appointment
       accepted = accept_appointment
       rejected = reject_pending_conflicting_appointments
+      # Send Accept Email
       {
         success: accepted && rejected && @appointment.errors.empty?,
         records: nil,
