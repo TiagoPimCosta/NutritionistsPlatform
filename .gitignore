@@ -5,40 +5,45 @@
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
 # Ignore bundler config.
-/.bundle
-
-# Ignore all environment files.
-/.env*
+backend/.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
+backend/log/*
 backend/tmp/*
-!/log/.keep
-!/tmp/.keep
+!backend/log/.keep
+!backend/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
+backend/tmp/pids/*
+!backend/tmp/pids/
+!backend/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/
-!/tmp/storage/.keep
+backend/storage/*
+!backend/storage/.keep
+backend/tmp/storage/*
+!backend/tmp/storage/
+!backend/tmp/storage/.keep
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
-backend/log
+backend/config/master.key
+
+backend/vendor/bundle
 
 node_modules
-.DS_Store
 dist
 dist-ssr
-*.local
-count.txt
-.env
+.pnpm-store
 .nitro
 .tanstack
-.pnpm-store
+
+package-lock.json
+
+.env
+.env*
+!*.env.example
+!frontend/.env.example
+
+.DS_Store
+*.local
+count.txt
