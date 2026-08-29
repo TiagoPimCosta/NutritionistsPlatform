@@ -2,15 +2,14 @@ import { ENV } from "@/utils/consts";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 export interface NutritionistPendingAppointmentsObj {
-  id: number;
-  date: string;
-  status_id: number;
-  nutritionist_id: number;
-  created_at: string;
-  updated_at: string;
-  guest_id: number;
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  status: "pending" | "accepted" | "rejected" | "cancelled";
+  nutritionist_id: string;
+  service_name: string;
   guest: {
-    id: number;
+    id: string;
     name: string;
     email: string;
   };

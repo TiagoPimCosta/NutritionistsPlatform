@@ -5,17 +5,20 @@ import { parseQueryParams } from "@/utils/services";
 import { ENV } from "@/utils/consts";
 
 export interface NutritionistsServicesObj {
-  id: number;
-  nutritionist_id: number;
-  service_id: number;
+  id: string;
+  nutritionist_id: string;
+  service_id: string;
   created_at: string;
   updated_at: string;
   street: string;
   city: string;
-  price: number;
+  price_cents: number;
+  duration_minutes: number;
   nutritionist: {
-    id: number;
+    id: string;
     name: string;
+    license_number: string;
+    title: string;
   };
   service: {
     name: string;

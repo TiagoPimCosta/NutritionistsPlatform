@@ -13,14 +13,14 @@ import { useState } from "react";
 
 interface AnswerAppointmentRequestModalProps {
   children: React.ReactNode;
-  appointmentId: number;
-  nutritionistId: number;
-  date: string;
+  appointmentId: string;
+  nutritionistId: string;
+  startsAt: string;
   guest: string;
 }
 
 export function AnswerAppointmentRequestModal(props: AnswerAppointmentRequestModalProps) {
-  const { children, appointmentId, nutritionistId, date, guest } = props;
+  const { children, appointmentId, nutritionistId, startsAt, guest } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -41,8 +41,8 @@ export function AnswerAppointmentRequestModal(props: AnswerAppointmentRequestMod
     handleCloseModal();
   };
   
-  const appointmentDate = dayjs(date).format("DD MMMM YYYY");
-  const appointmentHour = dayjs(date).utc().format("HH:mm a");
+  const appointmentDate = dayjs(startsAt).format("DD MMMM YYYY");
+  const appointmentHour = dayjs(startsAt).format("HH:mm");
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

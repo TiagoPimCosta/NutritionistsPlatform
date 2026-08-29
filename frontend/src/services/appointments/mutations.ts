@@ -4,10 +4,10 @@ import { toastError, toastSuccess } from "@/utils/toasts";
 import { useMutation } from "@tanstack/react-query";
 
 export interface CreateAppointmentBodyParams {
-  nutritionist_id: number;
+  nutritionist_service_id: string;
   name: string;
   email: string;
-  date: string;
+  starts_at: string;
 }
 
 export async function createAppointment(body: CreateAppointmentBodyParams) {
@@ -38,8 +38,8 @@ export function useCreateAppointment() {
 }
 
 interface AcceptAppointmentParams {
-  appointmentId: number;
-  nutritionistId: number;
+  appointmentId: string;
+  nutritionistId: string;
 }
 
 export async function acceptAppointment(params: AcceptAppointmentParams) {
@@ -67,15 +67,15 @@ export function useAcceptAppointment() {
     onSuccess: (data, vars) => {
       toastSuccess(data.message);
       queryClient.invalidateQueries({
-        queryKey: ["nutritionist_pending_appointments", String(vars.nutritionistId)],
+        queryKey: ["nutritionist_pending_appointments", vars.nutritionistId],
       });
     },
   });
 }
 
 interface RejectAppointmentParams {
-  appointmentId: number;
-  nutritionistId: number;
+  appointmentId: string;
+  nutritionistId: string;
 }
 
 export async function rejectAppointment(params: RejectAppointmentParams) {
@@ -103,7 +103,7 @@ export function useRejectAppointment() {
     onSuccess: (data, vars) => {
       toastSuccess(data.message);
       queryClient.invalidateQueries({
-        queryKey: ["nutritionist_pending_appointments", String(vars.nutritionistId)],
+        queryKey: ["nutritionist_pending_appointments", vars.nutritionistId],
       });
     },
   });
