@@ -6,7 +6,7 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 201, message: "Appointment created" }, status: :created
     else
-      render json: result[:errors], message: "Error creating appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error creating appointment", status: :unprocessable_content
     end
   end
 
@@ -17,7 +17,7 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 200, message: "Appointment accepted" }, status: :ok
     else
-      render json: result[:errors], message: "Error accepted appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error accepted appointment", status: :unprocessable_content
     end
   end
 
@@ -28,7 +28,7 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 200, message: "Appointment rejected" }, status: :ok
     else
-      render json: result[:errors], message: "Error rejected appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error rejected appointment", status: :unprocessable_content
     end
   end
 

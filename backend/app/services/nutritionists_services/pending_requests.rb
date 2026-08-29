@@ -21,7 +21,7 @@ module NutritionistsServices
     end
 
     private
-    
+
     def serialize(appointment)
       {
         id: appointment.id,
