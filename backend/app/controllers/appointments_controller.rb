@@ -34,6 +34,6 @@ class AppointmentsController < ApplicationController
 
   private
     def create_appointment_params
-      params.permit([ :date, :name, :email, :nutritionist_id ])
+      params.permit([ :starts_at, :name, :email, :nutritionist_service_id ])
     end
 end

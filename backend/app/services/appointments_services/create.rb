@@ -7,19 +7,15 @@ module AppointmentsServices
     end
 
     def call
-      apps = Appointment.where(guest: appointment.guest, status_id: 1)
-      apps.update_all(status_id: 4)
+      Appointment.where(guest: appointment.guest).pending.update_all(status: Appointment.statuses[:cancelled])
+
       {
         success: appointment.save,
-        records: nil,
-        errors: nil
+        records: appointment,
+        errors: appointment.errors.full_messages.map { |message| { message: message } }.presence
       }
-    rescue => e
-      {
-        success: false,
-        records: nil,
-        errors: [ message: e.message ]
-      }
+    rescue ActiveRecord::RecordNotFound => e
+      { success: false, records: nil, errors: [ { message: e.message } ] }
     end
 
     private
@@ -27,31 +23,23 @@ module AppointmentsServices
     attr_reader :create_appointment_params
 
     def appointment
-      @appointment ||= begin
-        Appointment.new(
-          {
-            date: date,
-            status_id: 1,
-            nutritionist_id: nutritionist_id,
-            guest: setup_guest
-          })
-      end
+      @appointment ||= Appointment.new(
+        guest: setup_guest,
+        nutritionist_service: NutritionistService.find(nutritionist_service_id),
+        starts_at: starts_at
+      )
     end
 
     def setup_guest
-      guest = Guest.find_by(email: email)
+      guest = Guest.find_by(email: email.to_s.strip.downcase)
+      return Guest.new(name: name, email: email) if guest.blank?
 
-      if guest.present? && name.present? && guest.name != name
-        guest.update(name: name)
-      end
-
-      return guest unless guest.blank?
-
-      Guest.create(name: name, email: email)
+      guest.update(name: name) if name.present? && guest.name != name
+      guest
     end
 
-    def date
-      create_appointment_params[:date]
+    def starts_at
+      create_appointment_params[:starts_at]
     end
 
     def name
@@ -62,8 +50,8 @@ module AppointmentsServices
       create_appointment_params[:email]
     end
 
-    def nutritionist_id
-      create_appointment_params[:nutritionist_id]
+    def nutritionist_service_id
+      create_appointment_params[:nutritionist_service_id]
     end
   end
 end

@@ -7,38 +7,22 @@ module AppointmentsServices
     end
 
     def call
-      setup_appointment
-      reject_appointment
+      appointment = Appointment.find(appointment_id)
+      appointment.rejected!
       # Send Reject Email
       {
-        success: @appointment.errors.empty?,
-        records: nil,
+        success: true,
+        records: appointment,
         errors: nil
       }
     rescue ActiveRecord::RecordNotFound => e
-      {
-        success: false,
-        records: nil,
-        errors: [ message: e.message ]
-      }
-    rescue => e
-      {
-        success: false,
-        records: nil,
-        errors: [ message: e.message ]
-      }
+      { success: false, records: nil, errors: [ { message: e.message } ] }
+    rescue ActiveRecord::RecordInvalid => e
+      { success: false, records: nil, errors: [ { message: e.message } ] }
     end
 
     private
 
     attr_reader :appointment_id
-
-    def reject_appointment
-      @appointment.update(status_id: 3)
-    end
-
-    def setup_appointment
-      @appointment = Appointment.find(appointment_id)
-    end
   end
 end

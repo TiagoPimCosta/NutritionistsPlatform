@@ -8,47 +8,31 @@ module AppointmentsServices
 
     def call
       setup_appointment
-      accepted = accept_appointment
-      rejected = reject_pending_conflicting_appointments
+      @appointment.accepted!
+      reject_overlapping_pending_appointments
       # Send Accept Email
       {
-        success: accepted && rejected && @appointment.errors.empty?,
-        records: nil,
+        success: true,
+        records: @appointment,
         errors: nil
       }
     rescue ActiveRecord::RecordNotFound => e
-      {
-        success: false,
-        records: nil,
-        errors: [ message: e.message ]
-      }
-    rescue => e
-      {
-        success: false,
-        records: nil,
-        errors: [ message: e.message ]
-      }
+      { success: false, records: nil, errors: [ { message: e.message } ] }
+    rescue ActiveRecord::RecordInvalid => e
+      { success: false, records: nil, errors: [ { message: e.message } ] }
     end
 
     private
 
     attr_reader :appointment_id
 
-    def accept_appointment
-      @appointment.update(status_id: 2)
-    end
-
-    def reject_pending_conflicting_appointments
-      pending_conflicting_appointments = Appointment.where(
-        nutritionist: @appointment.nutritionist,
-        date: @appointment.date,
-        status_id: 1
-      )
-      pending_conflicting_appointments.find_each do |conflicting_appt|
-        success = AppointmentsServices::Reject.new(conflicting_appt.id).call
-        return false unless success
-      end
-      true
+    def reject_overlapping_pending_appointments
+      Appointment
+        .for_nutritionist(@appointment.nutritionist.id)
+        .pending
+        .where.not(id: @appointment.id)
+        .overlapping(@appointment.starts_at, @appointment.ends_at)
+        .find_each { |conflicting| AppointmentsServices::Reject.new(conflicting.id).call }
     end
 
     def setup_appointment
