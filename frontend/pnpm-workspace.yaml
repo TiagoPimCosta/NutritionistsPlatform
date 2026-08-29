@@ -1,0 +1,12 @@
+# Autoriza os postinstall scripts que compilam binarios nativos.
+# 'onlyBuiltDependencies' e a chave do pnpm 10; 'allowBuilds' e a do pnpm 11+.
+# Manter as duas faz o ficheiro funcionar em qualquer uma das versoes.
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@tailwindcss/oxide'
+  - esbuild
+
+allowBuilds:
+  '@biomejs/biome': true
+  '@tailwindcss/oxide': true
+  esbuild: true

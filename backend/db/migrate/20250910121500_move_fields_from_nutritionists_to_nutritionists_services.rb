@@ -41,5 +41,3 @@ class MoveFieldsFromNutritionistsToNutritionistsServices < ActiveRecord::Migrati
     remove_column :nutritionists_services, :price, :integer
   end
 end
-
-

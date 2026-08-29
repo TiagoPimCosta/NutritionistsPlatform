@@ -16,10 +16,6 @@ production:
   <<: *default
   database: backend_production_postgres
 
-cable:
-  <<: *default
-  database: backend_production_postgres
-
 queue:
   <<: *default
   database: backend_production_postgres

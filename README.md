@@ -28,6 +28,22 @@ This will:
 
 To view the application just access http://localhost:3030
 
+### 🔑 Credentials
+
+Rails needs a `secret_key_base` to boot in production. It normally comes from
+`config/credentials.yml.enc`, which requires `config/master.key` to decrypt.
+
+That key is **not** committed here. Instead, compose passes `SECRET_KEY_BASE`
+directly, so `docker compose up` works on a fresh clone with no key.
+
+Running the backend manually in production mode outside Docker:
+
+```bash
+SECRET_KEY_BASE=any_value bin/rails server -e production
+```
+
+The manual setup below runs in development, which needs neither.
+
 ## Running Manually
 
 ### 📦 Prerequisites
@@ -38,7 +54,7 @@ Make sure you have the following installed:
 - [Rails](https://rubyonrails.org/)
 - [Bundler](https://bundler.io/)
 - [Node.js (LTS)](https://nodejs.org/)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [pnpm](https://pnpm.io/) — the project pins `pnpm@11.24.0` via the `packageManager` field
 - [PostgreSQL](https://www.postgresql.org/) (or the database configured in the backend)
 
 ## ⚙️ Setup
@@ -74,14 +90,10 @@ bin/rails server
 cd frontend
 
 # Install Node dependencies
-npm install
-# or
-yarn install
+pnpm install
 
-# Start React development server
-npm start
-# or
-yarn start
+# Start the Vite development server
+pnpm dev
 ```
 
 ## ⚙️ Run
@@ -97,5 +109,5 @@ bin/rails server
 
 ```bash
 cd frontend
-npm start
+pnpm dev
 ```
