@@ -78,7 +78,7 @@ cd backend
 bundle install
 
 # Setup database
-rails db:create db:migrate db:seed
+rails db:drop db:create db:migrate db:seed
 
 # Start Rails server
 bin/rails server
