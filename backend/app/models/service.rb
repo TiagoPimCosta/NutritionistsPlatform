@@ -1,4 +1,6 @@
 class Service < ApplicationRecord
-  has_many :nutritionists_services
-  has_many :nutritionists, through: :nutritionists_services
+  has_many :nutritionist_services, dependent: :destroy
+  has_many :nutritionists, through: :nutritionist_services
+
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
