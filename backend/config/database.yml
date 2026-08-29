@@ -12,6 +12,12 @@ development:
   host: localhost
   database: backend_development_postgres
 
+test:
+  <<: *default
+  username:
+  host: localhost
+  database: backend_test_postgres
+
 production:
   <<: *default
   database: backend_production_postgres

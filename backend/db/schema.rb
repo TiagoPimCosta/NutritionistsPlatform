@@ -10,61 +10,67 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_10_121500) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_29_100500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "appointment_statuses", force: :cascade do |t|
-    t.string "status"
+  create_table "appointments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "guest_id", null: false
+    t.uuid "nutritionist_service_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["guest_id", "status"], name: "index_appointments_on_guest_id_and_status"
+    t.index ["nutritionist_service_id", "status"], name: "index_appointments_on_nutritionist_service_id_and_status"
+    t.index ["starts_at", "ends_at"], name: "index_appointments_on_starts_at_and_ends_at"
+    t.check_constraint "ends_at > starts_at", name: "check_appointments_ends_after_starts"
   end
 
-  create_table "appointments", force: :cascade do |t|
-    t.datetime "date"
-    t.integer "status_id"
-    t.bigint "nutritionist_id", null: false
+  create_table "guests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "guest_id", null: false
-    t.index ["guest_id"], name: "index_appointments_on_guest_id"
-    t.index ["nutritionist_id"], name: "index_appointments_on_nutritionist_id"
+    t.index "lower((email)::text)", name: "index_guests_on_lower_email", unique: true
   end
 
-  create_table "guests", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
+  create_table "nutritionist_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "nutritionist_id", null: false
+    t.uuid "service_id", null: false
+    t.string "street", null: false
+    t.string "city", null: false
+    t.integer "price_cents", null: false
+    t.integer "duration_minutes", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["city"], name: "index_nutritionist_services_on_city"
+    t.index ["nutritionist_id", "service_id", "city"], name: "index_nutritionist_services_on_nutritionist_service_city", unique: true
+    t.index ["service_id"], name: "index_nutritionist_services_on_service_id"
+    t.check_constraint "duration_minutes > 0", name: "check_nutritionist_services_duration_positive"
+    t.check_constraint "price_cents > 0", name: "check_nutritionist_services_price_positive"
   end
 
-  create_table "nutritionists", force: :cascade do |t|
-    t.string "name"
+  create_table "nutritionists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "license_number", null: false
+    t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["license_number"], name: "index_nutritionists_on_license_number", unique: true
+    t.index ["name"], name: "index_nutritionists_on_name"
   end
 
-  create_table "nutritionists_services", force: :cascade do |t|
-    t.bigint "nutritionist_id", null: false
-    t.bigint "service_id", null: false
+  create_table "services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "street"
-    t.string "city"
-    t.integer "price"
-    t.index ["nutritionist_id"], name: "index_nutritionists_services_on_nutritionist_id"
-    t.index ["service_id"], name: "index_nutritionists_services_on_service_id"
+    t.index ["name"], name: "index_services_on_name", unique: true
   end
 
-  create_table "services", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_foreign_key "appointments", "appointment_statuses", column: "status_id"
   add_foreign_key "appointments", "guests"
-  add_foreign_key "appointments", "nutritionists"
-  add_foreign_key "nutritionists_services", "nutritionists"
-  add_foreign_key "nutritionists_services", "services"
+  add_foreign_key "appointments", "nutritionist_services"
+  add_foreign_key "nutritionist_services", "nutritionists"
+  add_foreign_key "nutritionist_services", "services"
 end

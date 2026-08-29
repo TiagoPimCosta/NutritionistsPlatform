@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Banknote, BriefcaseBusiness, ChevronDown } from "lucide-react";
+import { MapPin, Star, Banknote, BriefcaseBusiness } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@tanstack/react-router";
 import { ScheduleAppointmentModal } from "./ScheduleAppointmentModal";
@@ -13,7 +13,8 @@ interface ProfessionalCardProps {
 
 const ProfessionalCard = (props: ProfessionalCardProps) => {
   const { nutritionistsService } = props;
-  const { id, street, city, price, nutritionist, service } = nutritionistsService;
+  const { id, street, city, price_cents, duration_minutes, nutritionist, service } =
+    nutritionistsService;
 
   const nutritionistName = nutritionist.name;
 
@@ -27,7 +28,7 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
     currency: "EUR",
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
-  }).format(price / 100);
+  }).format(price_cents / 100);
 
   return (
     <Card className="p-6 shadow-md hover:shadow-lg transition-shadow">
@@ -48,7 +49,9 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
                 </Badge>
 
                 <h3 className="text-2xl font-semibold text-primary mb-1">{nutritionistName}</h3>
-                <p className="text-muted-foreground">{service.name} • 1925N</p>
+                <p className="text-muted-foreground">
+                  {nutritionist.title} • {nutritionist.license_number}
+                </p>
               </div>
               <div className="flex flex-row w-full justify-between">
                 <div className="flex flex-col gap-3">
@@ -63,7 +66,7 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
                   <div className="flex gap-2 items-center">
                     <BriefcaseBusiness className="h-5 w-5 text-primary" />
                     <span className="flex flex-row text-sm text-muted-foreground">
-                      First appointment <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      {service.name} · {duration_minutes} min
                     </span>
                   </div>
                   <div className="flex gap-2 items-center">
@@ -75,13 +78,13 @@ const ProfessionalCard = (props: ProfessionalCardProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-2 ml-4">
-            <ScheduleAppointmentModal nutritionistId={id}>
+            <ScheduleAppointmentModal nutritionistServiceId={id}>
               <Button size="lg" variant="schedule" className="w-64">
                 Schedule appointment
               </Button>
             </ScheduleAppointmentModal>
             <Button size="lg" variant="website" className="w-64" asChild>
-              <Link to="/nutritionist/$nutritionistId" params={{ nutritionistId: String(id) }}>
+              <Link to="/nutritionist/$nutritionistId" params={{ nutritionistId: nutritionist.id }}>
                 Website
               </Link>
             </Button>

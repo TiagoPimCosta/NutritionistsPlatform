@@ -78,7 +78,7 @@ cd backend
 bundle install
 
 # Setup database
-rails db:create db:migrate db:seed
+rails db:drop db:create db:migrate db:seed
 
 # Start Rails server
 bin/rails server
@@ -94,6 +94,39 @@ pnpm install
 
 # Start the Vite development server
 pnpm dev
+```
+
+## 🧪 Testing
+
+### Strategy
+
+The suite is written against behaviour the challenge specifies, not against implementation details, and it is layered so that each rule is asserted at the level where it lives:
+
+- **Models** cover the invariants: `ends_at` derived from the duration of the requested service, bookings refused in the past, emails unique regardless of case, and the `overlapping` scope — including the boundary case where a booking starting exactly when another ends must _not_ collide, so a nutritionist can take consecutive appointments.
+- **Service objects** cover the business rules: accepting a request rejects the other pending requests that overlap it, for that nutritionist only, across all of their services; and a new request cancels the guest's previous pending one without touching anyone else's.
+- **Controllers** cover the HTTP contract: status codes, pagination, the search filters, and the payload the frontend depends on.
+
+There are no fixtures. The domain is small and every test builds exactly the records it needs through helpers in `test/test_helper.rb`, which keeps the setup visible next to the assertions instead of in a file nobody reads.
+
+Database-level constraints are asserted too — an appointment cannot be forced to end before it starts even by bypassing validations — because the concurrency work depends on the database holding the line on its own.
+
+### Running
+
+```bash
+cd backend
+bin/rails db:test:prepare   # first run only
+bin/rails test
+```
+
+### Frontend
+
+The frontend suite covers the pieces that carry logic rather than layout: the date helper that builds the payload, the professional card that now renders real credentials instead of the placeholders it used to hardcode, and the scheduling form, which is asserted to block an incomplete submission and to post the contract the API expects.
+
+```bash
+cd frontend
+pnpm test              # single run
+pnpm test:watch        # watch mode
+pnpm test:coverage
 ```
 
 ## ⚙️ Run

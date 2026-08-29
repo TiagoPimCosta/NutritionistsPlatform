@@ -28,7 +28,7 @@ import FormError from "../FormError";
 
 interface ScheduleAppointmentModalProps {
   children: React.ReactNode;
-  nutritionistId: number;
+  nutritionistServiceId: string;
 }
 
 export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
@@ -53,10 +53,10 @@ export function ScheduleAppointmentModal(props: ScheduleAppointmentModalProps) {
 
   const handleSubmitScheduleAppointment = handleSubmit(async (data) => {
     const submittedData = {
-      nutritionist_id: props.nutritionistId,
+      nutritionist_service_id: props.nutritionistServiceId,
       name: data.name,
       email: data.email,
-      date: parseAppointmentDate(data.date, data.time),
+      starts_at: parseAppointmentDate(data.date, data.time),
     };
 
     await createAppointment.mutateAsync(submittedData);

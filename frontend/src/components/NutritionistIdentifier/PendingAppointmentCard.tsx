@@ -5,9 +5,6 @@ import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { AnswerAppointmentRequestModal } from "./AnswerAppointmentRequestModal";
 import type { NutritionistPendingAppointmentsObj } from "@/services/nutritionists/queries";
-import dayjsUtc from "dayjs/plugin/utc";
-
-dayjs.extend(dayjsUtc);
 
 interface PendingAppointmentCard {
   appointment: NutritionistPendingAppointmentsObj;
@@ -15,15 +12,15 @@ interface PendingAppointmentCard {
 
 const PendingAppointmentCard = (props: PendingAppointmentCard) => {
   const { appointment } = props;
-  const { id, date, guest, nutritionist_id } = appointment;
+  const { id, starts_at, ends_at, guest, nutritionist_id, service_name } = appointment;
 
   const nameInitials = guest.name
     .split(" ")
     .map((n) => n[0])
     .join("");
 
-  const appointmentDate = dayjs(date).format("DD MMMM YYYY");
-  const appointmentHour = dayjs(date).utc().format("HH:mm a");
+  const appointmentDate = dayjs(starts_at).format("DD MMMM YYYY");
+  const appointmentHour = `${dayjs(starts_at).format("HH:mm")} – ${dayjs(ends_at).format("HH:mm")}`;
 
   return (
     <Card className=" shadow-md hover:shadow-lg transition-shadow pb-0">
@@ -39,7 +36,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
             <div className="flex flex-col gap-4 w-full justify-between">
               <div className="flex flex-col">
                 <h3 className="text-2xl mb-1">{guest.name}</h3>
-                <span className="text-sm text-muted-foreground">Online appointment</span>
+                <span className="text-sm text-muted-foreground">{service_name}</span>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -60,7 +57,7 @@ const PendingAppointmentCard = (props: PendingAppointmentCard) => {
       </CardContent>
       <CardFooter className="border-t p-0 pt-0">
         <AnswerAppointmentRequestModal
-          date={date}
+          startsAt={starts_at}
           guest={guest.name}
           appointmentId={id}
           nutritionistId={nutritionist_id}

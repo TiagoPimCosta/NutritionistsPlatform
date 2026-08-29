@@ -1,38 +1,19 @@
 require "test_helper"
 
 class NutritionistsControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @nutritionist = nutritionists(:one)
-  end
+  test "lists the pending requests of a nutritionist" do
+    offering = create_offering
+    request_appointment(offering, create_guest(name: "Ana Martins"), 3.days.from_now)
 
-  test "should get index" do
-    get nutritionists_url, as: :json
+    get pending_requests_nutritionist_url(offering.nutritionist), as: :json
+
     assert_response :success
+    assert_equal "Ana Martins", response.parsed_body.first["guest"]["name"]
   end
 
-  test "should create nutritionist" do
-    assert_difference("Nutritionist.count") do
-      post nutritionists_url, params: { nutritionist: { address: @nutritionist.address, name: @nutritionist.name, price: @nutritionist.price } }, as: :json
-    end
+  test "returns 422 for an unknown nutritionist" do
+    get pending_requests_nutritionist_url(SecureRandom.uuid), as: :json
 
-    assert_response :created
-  end
-
-  test "should show nutritionist" do
-    get nutritionist_url(@nutritionist), as: :json
-    assert_response :success
-  end
-
-  test "should update nutritionist" do
-    patch nutritionist_url(@nutritionist), params: { nutritionist: { address: @nutritionist.address, name: @nutritionist.name, price: @nutritionist.price } }, as: :json
-    assert_response :success
-  end
-
-  test "should destroy nutritionist" do
-    assert_difference("Nutritionist.count", -1) do
-      delete nutritionist_url(@nutritionist), as: :json
-    end
-
-    assert_response :no_content
+    assert_response :unprocessable_content
   end
 end

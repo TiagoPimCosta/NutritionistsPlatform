@@ -1,38 +1,43 @@
 require "test_helper"
 
 class NutritionistsServicesControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @nutritionists_service = nutritionists_services(:one)
+  test "paginates the offerings" do
+    3.times { create_offering }
+
+    get nutritionists_services_url(page: 1, per_page: 2), as: :json
+
+    assert_response :success
+    assert_equal 2, response.parsed_body["items"].size
+    assert_equal 3, response.parsed_body["total_count"]
+    assert_equal 2, response.parsed_body["total_pages"]
   end
 
-  test "should get index" do
+  test "filters by nutritionist name" do
+    wanted = Nutritionist.create!(name: "Carla Santos", title: "Nutricionista", license_number: "2963N")
+    create_offering(nutritionist: wanted)
+    create_offering
+
+    get nutritionists_services_url(filter: "carla"), as: :json
+
+    assert_equal [ "Carla Santos" ], response.parsed_body["items"].map { |i| i["nutritionist"]["name"] }
+  end
+
+  test "filters by service name" do
+    create_offering(service: Service.create!(name: "Desportivo"))
+    create_offering(service: Service.create!(name: "Infantil"))
+
+    get nutritionists_services_url(filter: "desport"), as: :json
+
+    assert_equal [ "Desportivo" ], response.parsed_body["items"].map { |i| i["service"]["name"] }
+  end
+
+  test "exposes the license number and duration the UI used to hardcode" do
+    create_offering(duration_minutes: 45)
+
     get nutritionists_services_url, as: :json
-    assert_response :success
-  end
 
-  test "should create nutritionists_service" do
-    assert_difference("NutritionistsService.count") do
-      post nutritionists_services_url, params: { nutritionists_service: { nutritionist_id: @nutritionists_service.nutritionist_id, service_id: @nutritionists_service.service_id } }, as: :json
-    end
-
-    assert_response :created
-  end
-
-  test "should show nutritionists_service" do
-    get nutritionists_service_url(@nutritionists_service), as: :json
-    assert_response :success
-  end
-
-  test "should update nutritionists_service" do
-    patch nutritionists_service_url(@nutritionists_service), params: { nutritionists_service: { nutritionist_id: @nutritionists_service.nutritionist_id, service_id: @nutritionists_service.service_id } }, as: :json
-    assert_response :success
-  end
-
-  test "should destroy nutritionists_service" do
-    assert_difference("NutritionistsService.count", -1) do
-      delete nutritionists_service_url(@nutritionists_service), as: :json
-    end
-
-    assert_response :no_content
+    item = response.parsed_body["items"].first
+    assert item["nutritionist"]["license_number"].present?
+    assert_equal 45, item["duration_minutes"]
   end
 end

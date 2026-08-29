@@ -6,7 +6,7 @@ class NutritionistsController < ApplicationController
     if result[:success]
       render json: result[:records], status: :ok
     else
-      render json: result[:errors], status: :unprocessable_entity
+      render json: result[:errors], status: :unprocessable_content
     end
   end
 end

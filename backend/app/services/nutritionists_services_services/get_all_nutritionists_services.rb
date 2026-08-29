@@ -7,7 +7,7 @@ module NutritionistsServicesServices
     end
 
     def call
-      nutritionists_services = NutritionistsService.includes(:nutritionist, :service).all
+      nutritionists_services = NutritionistService.includes(:nutritionist, :service).all
 
       if filter.present?
         nutritionists_services = nutritionists_services
@@ -25,7 +25,7 @@ module NutritionistsServicesServices
         records: {
           items: nutritionists_services.as_json(
             include: {
-              nutritionist: { only: [ :id, :name ] },
+              nutritionist: { only: [ :id, :name, :license_number, :title ] },
               service: { only: [ :name ] }
             }
           ),

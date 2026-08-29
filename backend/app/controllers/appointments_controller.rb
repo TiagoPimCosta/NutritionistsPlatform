@@ -6,7 +6,7 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 201, message: "Appointment created" }, status: :created
     else
-      render json: result[:errors], message: "Error creating appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error creating appointment", status: :unprocessable_content
     end
   end
 
@@ -17,7 +17,7 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 200, message: "Appointment accepted" }, status: :ok
     else
-      render json: result[:errors], message: "Error accepted appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error accepted appointment", status: :unprocessable_content
     end
   end
 
@@ -28,12 +28,12 @@ class AppointmentsController < ApplicationController
     if result[:success]
       render json: { status: 200, message: "Appointment rejected" }, status: :ok
     else
-      render json: result[:errors], message: "Error rejected appointment", status: :unprocessable_entity
+      render json: result[:errors], message: "Error rejected appointment", status: :unprocessable_content
     end
   end
 
   private
     def create_appointment_params
-      params.permit([ :date, :name, :email, :nutritionist_id ])
+      params.permit([ :starts_at, :name, :email, :nutritionist_service_id ])
     end
 end
