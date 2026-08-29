@@ -118,6 +118,17 @@ bin/rails db:test:prepare   # first run only
 bin/rails test
 ```
 
+### Frontend
+
+The frontend suite covers the pieces that carry logic rather than layout: the date helper that builds the payload, the professional card that now renders real credentials instead of the placeholders it used to hardcode, and the scheduling form, which is asserted to block an incomplete submission and to post the contract the API expects.
+
+```bash
+cd frontend
+pnpm test              # single run
+pnpm test:watch        # watch mode
+pnpm test:coverage
+```
+
 ## ⚙️ Run
 
 ## Backend
