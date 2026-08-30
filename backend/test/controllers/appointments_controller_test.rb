@@ -64,9 +64,18 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
     assert_predicate appointment.reload, :rejected?
   end
 
-  test "returns 422 for an unknown appointment" do
+  test "returns 404 for an unknown appointment" do
     post accept_appointment_url(SecureRandom.uuid), as: :json
 
-    assert_response :unprocessable_content
+    assert_response :not_found
+  end
+
+  test "returns 409 when the request has already been answered" do
+    appointment = request_appointment(@offering, create_guest, @slot)
+    AppointmentsServices::Accept.new(appointment.id).call
+
+    post accept_appointment_url(appointment), as: :json
+
+    assert_response :conflict
   end
 end

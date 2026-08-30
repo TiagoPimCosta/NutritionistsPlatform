@@ -3,6 +3,20 @@ import { ENV } from "@/utils/consts";
 import { toastError, toastSuccess } from "@/utils/toasts";
 import { useMutation } from "@tanstack/react-query";
 
+async function parseResponse(response: Response): Promise<ApiResponseMessage> {
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message = Array.isArray(data)
+      ? data.map((error: { message: string }) => error.message).join(", ")
+      : (data?.message ?? "Something went wrong. Please try again.");
+
+    throw new Error(message);
+  }
+
+  return data as ApiResponseMessage;
+}
+
 export interface CreateAppointmentBodyParams {
   nutritionist_service_id: string;
   name: string;
@@ -25,8 +39,7 @@ export function useCreateAppointment() {
   return useMutation<ApiResponseMessage, Error, CreateAppointmentBodyParams>({
     mutationFn: async (vars) => {
       const response = await createAppointment(vars);
-      const data = await response.json();
-      return data as ApiResponseMessage;
+      return parseResponse(response);
     },
     onError: (error) => {
       toastError(error.message);
@@ -44,7 +57,9 @@ interface AcceptAppointmentParams {
 
 export async function acceptAppointment(params: AcceptAppointmentParams) {
   const { appointmentId } = params;
-  const url = new URL(ENV.VITE_API_URL + `appointments/${appointmentId}/accept`);
+  const url = new URL(
+    ENV.VITE_API_URL + `appointments/${appointmentId}/accept`,
+  );
 
   return fetch(url, {
     method: "POST",
@@ -58,8 +73,7 @@ export function useAcceptAppointment() {
   return useMutation<ApiResponseMessage, Error, AcceptAppointmentParams>({
     mutationFn: async (vars) => {
       const response = await acceptAppointment(vars);
-      const data = await response.json();
-      return data as ApiResponseMessage;
+      return parseResponse(response);
     },
     onError: (error) => {
       toastError(error.message);
@@ -80,7 +94,9 @@ interface RejectAppointmentParams {
 
 export async function rejectAppointment(params: RejectAppointmentParams) {
   const { appointmentId } = params;
-  const url = new URL(ENV.VITE_API_URL + `appointments/${appointmentId}/reject`);
+  const url = new URL(
+    ENV.VITE_API_URL + `appointments/${appointmentId}/reject`,
+  );
 
   return fetch(url, {
     method: "POST",
@@ -94,8 +110,7 @@ export function useRejectAppointment() {
   return useMutation<ApiResponseMessage, Error, RejectAppointmentParams>({
     mutationFn: async (vars) => {
       const response = await rejectAppointment(vars);
-      const data = await response.json();
-      return data as ApiResponseMessage;
+      return parseResponse(response);
     },
     onError: (error) => {
       toastError(error.message);

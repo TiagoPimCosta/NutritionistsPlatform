@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_29_100500) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_29_110000) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gist"
   enable_extension "pg_catalog.plpgsql"
 
   create_table "appointments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -22,10 +23,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_29_100500) do
     t.datetime "ends_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "nutritionist_id", null: false
     t.index ["guest_id", "status"], name: "index_appointments_on_guest_id_and_status"
     t.index ["nutritionist_service_id", "status"], name: "index_appointments_on_nutritionist_service_id_and_status"
     t.index ["starts_at", "ends_at"], name: "index_appointments_on_starts_at_and_ends_at"
     t.check_constraint "ends_at > starts_at", name: "check_appointments_ends_after_starts"
+    t.exclusion_constraint "nutritionist_id WITH =, tsrange(starts_at, ends_at) WITH &&", where: "status = 1", using: :gist, name: "no_overlapping_accepted_appointments"
   end
 
   create_table "guests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -46,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_29_100500) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["city"], name: "index_nutritionist_services_on_city"
+    t.index ["id", "nutritionist_id"], name: "index_nutritionist_services_on_id_and_nutritionist", unique: true
     t.index ["nutritionist_id", "service_id", "city"], name: "index_nutritionist_services_on_nutritionist_service_city", unique: true
     t.index ["service_id"], name: "index_nutritionist_services_on_service_id"
     t.check_constraint "duration_minutes > 0", name: "check_nutritionist_services_duration_positive"
@@ -70,7 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_29_100500) do
   end
 
   add_foreign_key "appointments", "guests"
-  add_foreign_key "appointments", "nutritionist_services"
+  add_foreign_key "appointments", "nutritionist_services", column: ["nutritionist_service_id", "nutritionist_id"], primary_key: ["id", "nutritionist_id"]
   add_foreign_key "nutritionist_services", "nutritionists"
   add_foreign_key "nutritionist_services", "services"
 end

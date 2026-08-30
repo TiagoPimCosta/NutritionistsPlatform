@@ -7,35 +7,77 @@ module AppointmentsServices
     end
 
     def call
-      Appointment.where(guest: appointment.guest).pending.update_all(status: Appointment.statuses[:cancelled])
+      appointment = book!
 
-      {
-        success: appointment.save,
-        records: appointment,
-        errors: appointment.errors.full_messages.map { |message| { message: message } }.presence
-      }
+      if appointment.persisted?
+        { success: true, records: appointment, errors: nil, code: nil }
+      else
+        { success: false, records: appointment, errors: messages_from(appointment), code: :invalid }
+      end
     rescue ActiveRecord::RecordNotFound => e
-      { success: false, records: nil, errors: [ { message: e.message } ] }
+      failure(e.message, :not_found)
+    rescue ActiveRecord::RecordInvalid => e
+      { success: false, records: nil, errors: messages_from(e.record), code: :invalid }
     end
 
     private
 
     attr_reader :create_appointment_params
 
-    def appointment
-      @appointment ||= Appointment.new(
-        guest: setup_guest,
-        nutritionist_service: NutritionistService.find(nutritionist_service_id),
-        starts_at: starts_at
-      )
+    def book!
+      offering = NutritionistService.find(nutritionist_service_id)
+      attempts = 0
+
+      begin
+        attempts += 1
+        booked(offering)
+      rescue ActiveRecord::RecordNotUnique
+        raise if attempts > 1
+        retry
+      end
     end
 
-    def setup_guest
-      guest = Guest.find_by(email: email.to_s.strip.downcase)
-      return Guest.new(name: name, email: email) if guest.blank?
+    def booked(offering)
+      appointment = nil
 
-      guest.update(name: name) if name.present? && guest.name != name
+      Appointment.transaction do
+        guest = resolve_guest
+        appointment = Appointment.new(guest: guest, nutritionist_service: offering, starts_at: starts_at)
+
+        raise ActiveRecord::Rollback unless appointment.save
+
+        cancel_previous_pending(appointment)
+      end
+
+      appointment
+    end
+
+    def resolve_guest
+      guest = Guest.lock.find_by(email: normalized_email)
+      return Guest.create!(name: name, email: email) if guest.blank?
+
+      guest.update!(name: name) if name.present? && guest.name != name
       guest
+    end
+
+    def cancel_previous_pending(appointment)
+      Appointment
+        .where(guest_id: appointment.guest_id)
+        .pending
+        .where.not(id: appointment.id)
+        .update_all(status: Appointment.statuses[:cancelled], updated_at: Time.current)
+    end
+
+    def messages_from(appointment)
+      appointment.errors.full_messages.map { |message| { message: message } }.presence
+    end
+
+    def failure(message, code)
+      { success: false, records: nil, errors: [ { message: message } ], code: code }
+    end
+
+    def normalized_email
+      email.to_s.strip.downcase
     end
 
     def starts_at
