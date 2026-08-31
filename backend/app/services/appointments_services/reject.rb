@@ -31,6 +31,7 @@ module AppointmentsServices
         raise ConflictError, "Appointment is already #{appointment.status}" unless appointment.pending?
 
         appointment.rejected!
+        NotificationMailer.with(appointment: appointment).reject_appointment_email.deliver_later
         appointment
       end
     end

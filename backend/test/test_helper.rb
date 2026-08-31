@@ -5,7 +5,7 @@ require "minitest/mock"
 
 module ActiveSupport
   class TestCase
-    parallelize(workers: :number_of_processors)
+    parallelize(workers: 1)
 
     def create_offering(duration_minutes: 45, city: "Braga", nutritionist: nil, service: nil)
       NutritionistService.create!(

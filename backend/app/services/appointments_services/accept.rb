@@ -39,10 +39,15 @@ module AppointmentsServices
         raise ConflictError, "Appointment is already #{appointment.status}" unless appointment.pending?
 
         appointment.accepted!
+        notify(appointment)
         reject_overlapping(appointment)
 
         appointment
       end
+    end
+
+    def notify(appointment)
+      NotificationMailer.with(appointment: appointment).accept_appointment_email.deliver_later
     end
 
     def lock_diary(nutritionist_id)
