@@ -96,6 +96,16 @@ pnpm install
 pnpm dev
 ```
 
+## ✉️ Emails
+
+Both flows the challenge describes end in a message to the guest: the request is confirmed, or it is turned away. That includes the requests rejected by the cascade - someone whose slot was given to another guest is told, not left waiting.
+
+They are sent as background jobs through Solid Queue, which the project already depended on without ever using. `config/puma.rb` runs the worker inside the web process when `SOLID_QUEUE_IN_PUMA` is set, so Docker Compose needs no second container.
+
+The enqueue waits for the transaction. `MailDeliveryJob` sets `enqueue_after_transaction_commit`, so a job is only handed to the queue once the acceptance has actually committed - a worker can never pick up a job for a row it cannot see yet, and an acceptance that rolls back sends nothing. There is a test for exactly that: it fails if the setting is removed.
+
+**Where the mail goes.** A challenge repository has no SMTP credentials to ship, so production writes each message to `tmp/mails` as an `.eml` file, one per recipient, which is enough to read the whole flow end to end. A real deployment swaps `delivery_method` for `:smtp` and fills in the `smtp_settings` block that sits commented right below it in `config/environments/production.rb`.
+
 ## 🔒 Concurrency
 
 Accepting a request is the one place in this application where two people can collide: two browser tabs, two clicks, one slot. The rule the challenge asks for - accepting a request rejects the others that overlap it - is a read followed by a write, and a read-then-write with nothing between them is a race.

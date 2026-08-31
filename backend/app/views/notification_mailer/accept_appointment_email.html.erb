@@ -1,0 +1,15 @@
+<h1>Hello <%= @guest.name %>,</h1>
+<p>
+  Your <%= @service.service.name %> appointment with <%= @nutritionist.name %>
+  (<%= @nutritionist.title %>) is confirmed for <%= @date %>, <%= @time %> – <%= @ends_at %>.
+</p>
+<p>
+  It takes place at <%= @service.street %>, <%= @service.city %>.
+</p>
+<p>
+  We look forward to seeing you then!
+</p>
+<p>
+  Best regards,<br />
+  <%= @nutritionist.name %>
+</p>

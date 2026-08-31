@@ -1,11 +1,12 @@
 <h1>Hello <%= @guest.name %>,</h1>
 <p>
-  Unfortunately, your appointment with <%= @nutritionist.name %> on <%= @date %> at <%= @time %> was rejected.
+  Unfortunately, your <%= @service.service.name %> appointment request with
+  <%= @nutritionist.name %> for <%= @date %> at <%= @time %> could not be confirmed.
 </p>
 <p>
   Please feel free to book another time that works best for you.
 </p>
 <p>
-  Best regards,  
+  Best regards,<br />
   <%= @nutritionist.name %>
 </p>
